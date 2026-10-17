@@ -1,0 +1,9 @@
+{
+  "name": "pixel-design-tasks",
+  "version": "1.0.0",
+  "description": "Simple task list app: Node.js backend + vanilla JS frontend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

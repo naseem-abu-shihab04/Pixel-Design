@@ -1,0 +1,76 @@
+:root {
+  --bg: #f4f5f9;
+  --card: #ffffff;
+  --text: #1d1f2b;
+  --muted: #6b7080;
+  --accent: #5b5bd6;
+  --border: #e3e5ec;
+  --danger: #d64545;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14151c;
+    --card: #1e2029;
+    --text: #e9eaf0;
+    --muted: #9a9eae;
+    --accent: #8a8af0;
+    --border: #2e3140;
+    --danger: #f07070;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  height: fit-content;
+}
+h1 { margin: 0 0 4px; font-size: 1.6rem; }
+.stats { margin: 0 0 20px; color: var(--muted); font-size: 0.9rem; }
+form { display: flex; gap: 8px; }
+input {
+  flex: 1;
+  padding: 12px 14px;
+  font: inherit;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+}
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+}
+form button { padding: 12px 20px; background: var(--accent); color: #fff; font-weight: 600; }
+.error { color: var(--danger); min-height: 1.2em; margin: 8px 0; font-size: 0.9rem; }
+ul { list-style: none; margin: 0; padding: 0; }
+li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+}
+li:last-child { border-bottom: none; }
+li input[type="checkbox"] { flex: none; width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+li span { flex: 1; word-break: break-word; }
+li.done span { text-decoration: line-through; color: var(--muted); }
+.delete { background: transparent; color: var(--muted); padding: 6px 10px; }
+.delete:hover { color: var(--danger); }
+.empty { color: var(--muted); text-align: center; margin: 24px 0 0; }
