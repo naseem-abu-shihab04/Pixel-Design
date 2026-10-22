@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Clasico Sweets Post</title>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@700;900&family=Anton&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 1200px; background: #05060c; overflow: hidden; }
+  #post { position: relative; width: 1600px; height: 1200px; overflow: hidden; font-family: 'Cairo', sans-serif; }
+  canvas { position: absolute; inset: 0; }
+  .layer { position: absolute; }
+
+  /* team tints: Madrid (left) white/gold, Barca (right) blaugrana */
+  .tint-left  { inset: 0; background: radial-gradient(ellipse 60% 80% at 15% 45%, rgba(255,226,150,.30), transparent 70%); mix-blend-mode: screen; }
+  .tint-right { inset: 0; background:
+      radial-gradient(ellipse 45% 70% at 92% 40%, rgba(165,0,68,.55), transparent 70%),
+      radial-gradient(ellipse 45% 70% at 70% 55%, rgba(0,77,152,.55), transparent 70%); mix-blend-mode: screen; }
+
+  .player { filter: drop-shadow(0 0 18px rgba(0,0,0,.9)); }
+  #mbappe { left: 10px; top: 150px; width: 630px;
+    filter: drop-shadow(0 0 22px rgba(255,190,80,.75)) drop-shadow(0 0 60px rgba(255,120,0,.45)) contrast(1.08) saturate(1.05); }
+  #yamal { right: -60px; bottom: 0; width: 900px;
+    filter: drop-shadow(0 0 22px rgba(255,110,40,.8)) drop-shadow(0 0 60px rgba(255,60,0,.45)) contrast(1.1) saturate(1.15); }
+
+  /* sweets */
+  .tray { left: 205px; top: 845px; width: 560px; height: 150px; border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 35%, #fff2b8 0%, #e8b84a 30%, #a8701c 65%, #5a3608 100%);
+    box-shadow: 0 25px 40px rgba(0,0,0,.7), inset 0 -10px 20px rgba(0,0,0,.4), 0 0 40px rgba(255,190,80,.5); transform: rotate(-4deg); }
+  .tray::after { content: ""; position: absolute; inset: 14px 22px; border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 40%, #ffe9a6, #d29a32 70%); box-shadow: inset 0 6px 14px rgba(0,0,0,.35); }
+  #baklava { left: 245px; top: 700px; width: 500px; transform: rotate(-4deg);
+    filter: drop-shadow(0 14px 14px rgba(0,0,0,.6)) saturate(1.15) brightness(1.05); }
+  #kunafa { left: 880px; top: 775px; width: 600px; transform: rotate(5deg);
+    filter: drop-shadow(0 22px 26px rgba(0,0,0,.75)) drop-shadow(0 0 30px rgba(255,140,40,.45)) saturate(1.2) contrast(1.05); }
+
+  /* headline */
+  .title { top: 26px; left: 0; right: 0; text-align: center; }
+  .kicker { font-family: 'Anton', sans-serif; font-size: 34px; letter-spacing: 14px; color: #ffd66b; direction: ltr;
+    text-shadow: 0 0 14px rgba(255,140,0,.9); }
+  .headline { font-family: 'Lalezar', sans-serif; font-size: 170px; line-height: 1; margin-top: -4px;
+    background: linear-gradient(180deg, #fff8d8 0%, #ffd34d 35%, #ff8a00 70%, #c42a00 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 4px 0 #3a0a00) drop-shadow(0 0 22px rgba(255,110,0,.85)); }
+  .sub { font-family: 'Lalezar', sans-serif; font-size: 50px; color: #fff; margin-top: -6px;
+    text-shadow: 0 3px 0 #000, 0 0 18px rgba(255,90,0,.9); }
+
+  /* VS */
+  .vs { left: 650px; top: 470px; width: 300px; height: 300px; display: grid; place-items: center; direction: ltr; }
+  .vs::before { content: ""; position: absolute; inset: 40px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,200,60,.95) 0%, rgba(255,90,0,.6) 35%, transparent 70%); filter: blur(10px); }
+  .vs span { position: relative; font-family: 'Anton', sans-serif; font-size: 190px; font-style: italic; line-height: 1;
+    color: #fff; -webkit-text-stroke: 4px #4a0d00;
+    text-shadow: 0 0 20px #ff7a00, 0 0 50px #ff3c00, 6px 8px 0 #2a0500; }
+
+  /* team labels */
+  .tag { top: 24px; padding: 10px 30px 14px; font-family: 'Lalezar', sans-serif; font-size: 44px; color: #fff;
+    border-radius: 14px; transform: skewX(-8deg); box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+  .tag small { display: block; font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 5px; margin-top: -4px; direction: ltr; text-align: center; }
+  .tag.madrid { left: 40px; background: linear-gradient(135deg, #ffffff, #e9e3cf 60%, #c9a44a); color: #1c1c3a; border: 3px solid #d4af37; }
+  .tag.barca  { right: 40px; background: linear-gradient(90deg, #004d98 0 50%, #a50044 50% 100%); border: 3px solid #edbb00; }
+
+  /* bottom strip */
+  .strip { left: 0; right: 0; bottom: 0; height: 120px;
+    background: linear-gradient(180deg, rgba(10,4,0,.0), rgba(10,4,0,.9) 30%, #0b0300);
+    border-top: 3px solid; border-image: linear-gradient(90deg, transparent, #ffb000, #ff4d00, #ffb000, transparent) 1;
+    display: flex; align-items: center; justify-content: center; gap: 28px; }
+  .brand { font-family: 'Lalezar', sans-serif; font-size: 60px; color: #ffd66b; text-shadow: 0 0 16px rgba(255,140,0,.8); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff7a00; box-shadow: 0 0 12px #ff7a00; }
+  .cta { font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 32px; color: #fff; }
+</style>
+</head>
+<body>
+<div id="post">
+  <canvas id="bg" width="1600" height="1200"></canvas>
+  <div class="layer tint-left"></div>
+  <div class="layer tint-right"></div>
+  <canvas id="fireBack" width="1600" height="1200"></canvas>
+
+  <img id="mbappe" class="layer player" src="assets/mbappe.png" alt="">
+  <img id="yamal" class="layer player" src="assets/yamal2x.png" alt="">
+
+  <div class="layer tray"></div>
+  <img id="baklava" class="layer" src="assets/baklava.png" alt="">
+  <img id="kunafa" class="layer" src="assets/kunafa.png" alt="">
+
+  <div class="layer title">
+    <div class="kicker">EL CLÁSICO</div>
+    <div class="headline">الكلاسيكو</div>
+    <div class="sub">مين حلوه أقوى؟ 🔥</div>
+  </div>
+
+  <div class="layer vs"><span>VS</span></div>
+
+  <canvas id="fireFront" width="1600" height="1200"></canvas>
+
+  <div class="layer tag madrid">فريق البقلاوة<small>REAL MADRID</small></div>
+  <div class="layer tag barca">فريق الكنافة<small>FC BARCELONA</small></div>
+
+  <div class="layer strip">
+    <span class="cta">اطلب حلوتك وشجّع فريقك</span>
+    <span class="dot"></span>
+    <span class="brand">حلويات [اسم المحل]</span>
+    <span class="dot"></span>
+    <span class="cta">ليلة الكلاسيكو ✦ أطيب جمهور</span>
+  </div>
+</div>
+
+<script>
+// deterministic random so every render is identical
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// ---- stadium background ----
+const bg = document.getElementById('bg').getContext('2d');
+const W = 1600, H = 1200;
+let g = bg.createLinearGradient(0, 0, 0, H);
+g.addColorStop(0, '#02030a'); g.addColorStop(.45, '#0a0d1e'); g.addColorStop(.62, '#120a08'); g.addColorStop(1, '#050302');
+bg.fillStyle = g; bg.fillRect(0, 0, W, H);
+
+// stands / crowd: rows of tiny lit dots that curve like a bowl
+for (let row = 0; row < 70; row++) {
+  const y = 330 + row * 5.2;
+  for (let x = -20; x < W + 20; x += 4 + rnd() * 5) {
+    const curve = Math.pow((x - W / 2) / (W / 2), 2) * -60;
+    const left = x < W / 2;
+    const hue = rnd() < .5 ? (left ? 45 : (rnd() < .5 ? 340 : 215)) : 30;
+    bg.fillStyle = `hsla(${hue},${55 + rnd() * 40}%,${25 + rnd() * 40}%,${.4 + rnd() * .45})`;
+    bg.fillRect(x, y + curve + rnd() * 3, 2 + rnd() * 2, 2 + rnd() * 2);
+  }
+}
+// phone flashes in the crowd
+for (let i = 0; i < 600; i++) {
+  const x = rnd() * W, y = 320 + rnd() * 360;
+  const r = .8 + rnd() * 1.8;
+  bg.fillStyle = `rgba(255,255,240,${.4 + rnd() * .6})`;
+  bg.beginPath(); bg.arc(x, y, r, 0, 7); bg.fill();
+}
+// floodlights + beams
+[[120, 70], [460, 40], [1140, 40], [1480, 70]].forEach(([x, y]) => {
+  bg.save(); bg.globalCompositeOperation = 'lighter';
+  const beam = bg.createLinearGradient(x, y, W / 2, 900);
+  beam.addColorStop(0, 'rgba(255,245,220,.4)'); beam.addColorStop(1, 'rgba(255,245,220,0)');
+  bg.fillStyle = beam; bg.beginPath();
+  bg.moveTo(x - 10, y); bg.lineTo(x + 10, y);
+  bg.lineTo(W / 2 + (x - W / 2) * .1 + 260, 1000); bg.lineTo(W / 2 + (x - W / 2) * .1 - 260, 1000); bg.fill();
+  const glow = bg.createRadialGradient(x, y, 0, x, y, 120);
+  glow.addColorStop(0, 'rgba(255,255,255,1)'); glow.addColorStop(.15, 'rgba(255,240,200,.7)'); glow.addColorStop(1, 'rgba(255,200,120,0)');
+  bg.fillStyle = glow; bg.fillRect(x - 120, y - 120, 240, 240);
+  // light panel grid
+  bg.fillStyle = '#fff';
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) bg.fillRect(x - 22 + i * 12, y - 8 + j * 10, 8, 7);
+  bg.restore();
+});
+
+// pitch in perspective
+bg.save();
+const pTop = 700, horizonW = 1100;
+for (let s = 0; s < 12; s++) {
+  const y0 = pTop + Math.pow(s / 12, 1.6) * (H - pTop), y1 = pTop + Math.pow((s + 1) / 12, 1.6) * (H - pTop);
+  const w0 = horizonW + (y0 - pTop) * 2.4, w1 = horizonW + (y1 - pTop) * 2.4;
+  bg.fillStyle = s % 2 ? '#0f4a1c' : '#145a23';
+  bg.beginPath(); bg.moveTo(W / 2 - w0 / 2, y0); bg.lineTo(W / 2 + w0 / 2, y0); bg.lineTo(W / 2 + w1 / 2, y1); bg.lineTo(W / 2 - w1 / 2, y1); bg.fill();
+}
+bg.strokeStyle = 'rgba(255,255,255,.75)'; bg.lineWidth = 4;
+bg.beginPath(); bg.moveTo(W / 2, pTop); bg.lineTo(W / 2, H); bg.stroke();
+bg.beginPath(); bg.ellipse(W / 2, 880, 300, 90, 0, 0, 7); bg.stroke();
+bg.beginPath(); bg.moveTo(W / 2 - horizonW / 2, pTop); bg.lineTo(W / 2 + horizonW / 2, pTop); bg.stroke();
+// darken pitch toward edges
+const vig = bg.createRadialGradient(W / 2, 880, 100, W / 2, 880, 900);
+vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,.45)');
+bg.fillStyle = vig; bg.fillRect(0, pTop, W, H - pTop);
+bg.restore();
+
+// central smoke / heat
+bg.save(); bg.globalCompositeOperation = 'lighter';
+const heat = bg.createRadialGradient(W / 2, 620, 0, W / 2, 620, 520);
+heat.addColorStop(0, 'rgba(255,120,20,.45)'); heat.addColorStop(1, 'rgba(255,60,0,0)');
+bg.fillStyle = heat; bg.fillRect(0, 0, W, H);
+bg.restore();
+
+// lightning crack down the middle
+function bolt(ctx, x, y, len, width) {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  ctx.strokeStyle = 'rgba(255,220,140,.95)'; ctx.lineWidth = width; ctx.shadowColor = '#ff8a00'; ctx.shadowBlur = 30;
+  ctx.beginPath(); ctx.moveTo(x, y);
+  let cx = x, cy = y;
+  while (cy < y + len) { cx += (rnd() - .5) * 70; cy += 30 + rnd() * 40; ctx.lineTo(cx, cy);
+    if (rnd() < .25) { ctx.moveTo(cx, cy); ctx.lineTo(cx + (rnd() - .5) * 160, cy + 60); ctx.moveTo(cx, cy); } }
+  ctx.stroke(); ctx.restore();
+}
+bolt(bg, 800, 280, 480, 3);
+
+// ---- fire ----
+function fire(ctx, baseY, height, density, alpha) {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.filter = 'blur(6px)';
+  for (let i = 0; i < density; i++) {
+    const x = rnd() * W;
+    // taller flames on the outer edges, lower in the middle so the sweets stay readable
+    const edge = Math.abs(x - W / 2) / (W / 2);
+    const h = height * (.35 + rnd() * .65) * (.55 + edge * .7);
+    const w = 18 + rnd() * 50;
+    const grad = ctx.createLinearGradient(0, baseY, 0, baseY - h);
+    grad.addColorStop(0, `rgba(255,240,170,${alpha})`);
+    grad.addColorStop(.25, `rgba(255,160,20,${alpha * .9})`);
+    grad.addColorStop(.6, `rgba(230,50,0,${alpha * .6})`);
+    grad.addColorStop(1, 'rgba(120,0,0,0)');
+    ctx.fillStyle = grad;
+    const sway = (rnd() - .5) * 60;
+    ctx.beginPath(); ctx.moveTo(x - w, baseY);
+    ctx.quadraticCurveTo(x - w * .6, baseY - h * .5, x + sway, baseY - h);
+    ctx.quadraticCurveTo(x + w * .6, baseY - h * .5, x + w, baseY); ctx.fill();
+  }
+  ctx.restore();
+}
+function embers(ctx, n) {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < n; i++) {
+    const x = rnd() * W, y = 250 + rnd() * 900, r = .8 + rnd() * 2.6;
+    ctx.shadowColor = '#ff7a00'; ctx.shadowBlur = 10;
+    ctx.fillStyle = `rgba(255,${150 + rnd() * 90 | 0},60,${.5 + rnd() * .5})`;
+    ctx.beginPath(); ctx.ellipse(x, y, r, r * (1.5 + rnd() * 2), (rnd() - .5) * .8, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+}
+const fb = document.getElementById('fireBack').getContext('2d');
+fire(fb, 1180, 760, 420, .75);
+fire(fb, 1180, 420, 200, .6);
+embers(fb, 320);
+
+const ff = document.getElementById('fireFront').getContext('2d');
+fire(ff, 1215, 300, 220, .65);
+embers(ff, 160);
+// edge vignette
+const ev = ff.createRadialGradient(W / 2, H / 2, 450, W / 2, H / 2, 1050);
+ev.addColorStop(0, 'rgba(0,0,0,0)'); ev.addColorStop(1, 'rgba(0,0,0,.6)');
+ff.fillStyle = ev; ff.fillRect(0, 0, W, H);
+</script>
+</body>
+</html>
